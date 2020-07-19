@@ -1,0 +1,23 @@
+import numpy as np
+import math
+
+l = []
+
+trainfile = open("../class-master_2/takasaki_temp.csv")
+trainline = trainfile.read()
+trainline = [[format (s1) for s1 in s0.split(",")] for s0 in trainline.strip().split("\n")]
+
+def split_list(l, n):
+    """
+    reference : https://www.python.ambitious-engineer.com/archives/1843
+    """
+    for idx in range(0, len(l), n):
+        yield l[idx:idx + n]
+
+for i in range(0, len(trainline)):
+    l.append(trainline[i][1])
+
+result = list(split_list(l, 144))
+print(len(result[0]))
+
+
