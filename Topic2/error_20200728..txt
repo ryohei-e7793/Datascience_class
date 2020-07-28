@@ -1,0 +1,13 @@
+>ERROR: Cannot uninstall 'wrapt'. It is a distutils installed project and thus we cannot accurately determine which files belong to it which would lead to only a partial uninstall.
+
+
+pip install tensorflow --ignore-installed --userで解決
+
+
+Traceback (most recent call last):
+  File "inference.py", line 2, in <module>
+    from models.resnet import centernet
+  File "/Users/ryoheieguchi/Desktop/Datascience_class/keras-CenterNet-master/models/resnet.py", line 6, in <module>
+    from keras.initializers import normal, constant, zeros
+ImportError: cannot import name 'normal' from 'keras.initializers' (/anaconda3/lib/python3.7/site-packages/keras/initializers.py)
+
