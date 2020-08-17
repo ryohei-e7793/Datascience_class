@@ -18,13 +18,13 @@ T2 = []
 Flair = []
 
 for i in range(0, len(files)):
-    if "VSD.Brain.XX.O.MR_T1" in files[i]:
+    if "VSD.Brain.XX.O.MR_T1." in files[i]:
         T1.append(files[i])
-    if "VSD.Brain.XX.O.MR_T2" in files[i]:
+    if "VSD.Brain.XX.O.MR_T2." in files[i]:
         T2.append(files[i])
-    if "VSD.Brain.XX.O.MR_T1c" in files[i]:
+    if "VSD.Brain.XX.O.MR_T1c." in files[i]:
     	T1C.append(files[i])
-    if "VSD.Brain.XX.O.MR_Flair" in files[i]:
+    if "VSD.Brain.XX.O.MR_Flair." in files[i]:
     	Flair.append(files[i])
 
 
@@ -51,8 +51,10 @@ for d in range(0, len(Flair)):
 
 #niiファイル読み込み
 
-for j in range(0, len(T1)):
-    nii_path = "/Users/ryoheieguchi/Desktop/Class/BRATS2015/HGG_nii/" + T1_lastpath[j].replace('.mha', '.nii')
-    mha_path = T1[j]
+for j in range(0, len(Flair)):
+    nii_path = "/Users/ryoheieguchi/Desktop/Class/BRATS2015/HGG_nii/" + Flair_lastpath[j].replace('.mha', '.nii')
+    mha_path = Flair[j]
     img = sitk.ReadImage(mha_path)
     sitk.WriteImage(img, nii_path)
+
+
