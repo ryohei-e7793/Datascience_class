@@ -2,8 +2,8 @@ import numpy as np
 import tf_models
 from sklearn.preprocessing import scale
 import tensorflow as tf
-from tensorflow.contrib.keras.python.keras.backend import learning_phase
-from tensorflow.contrib.keras.python.keras.layers import concatenate, Conv3D
+from tensorflow.keras.backend import learning_phase
+from tensorflow.keras.layers import concatenate, Conv3D
 from nibabel import load as load_nii
 import os
 import argparse
@@ -12,7 +12,7 @@ import keras
 def parse_inputs():
 
     parser = argparse.ArgumentParser(description='train the model')
-    parser.add_argument('-r', '--root-path', dest='root_path', default='/media/lele/Data/spie/Brats17TrainingData/HGG')
+    parser.add_argument('-r', '--root-path', dest='root_path', default='/Users/ryoheieguchi/Desktop/Class/BRATS2015/HGG_nii')
     parser.add_argument('-sp', '--save-path', dest='save_path', default='dense24_correction')
     parser.add_argument('-lp', '--load-path', dest='load_path', default='dense24_correction')
     parser.add_argument('-ow', '--offset-width', dest='offset_w', type=int, default=12)
@@ -27,7 +27,7 @@ def parse_inputs():
     parser.add_argument('-c', '--continue-training', dest='continue_training', type=bool, default=False)
     parser.add_argument('-mn', '--model_name', dest='model_name', type=str, default='dense24')
     parser.add_argument('-nc', '--n4correction', dest='correction', type=bool, default=False)
-    parser.add_argument('-gpu', '--gpu_id', dest='gpu_id', type=str, default='0')
+    #parser.add_argument('-gpu', '--gpu_id', dest='gpu_id', type=str, default='0')
     return vars(parser.parse_args())
 
 options = parse_inputs()
@@ -101,16 +101,21 @@ def vox_generator(all_files, n_pos, n_neg,correction= False):
     while 1:
         for file in all_files:
             if correction:
-                flair = load_nii(os.path.join(path, file, file + '_flair_corrected.nii.gz')).get_data()
-                t2 = load_nii(os.path.join(path, file, file + '_t2_corrected.nii.gz')).get_data()
-                t1 = load_nii(os.path.join(path, file, file + '_t1_corrected.nii.gz')).get_data()
-                t1ce = load_nii(os.path.join(path, file, file + '_t1ce_corrected.nii.gz')).get_data()
+                flair = load_nii(os.path.join('/Users/ryoheieguchi/Desktop/Class/BRATS2015/HGG_ni/Flair')).get_data()
+                t2 = load_nii(os.path.join('/Users/ryoheieguchi/Desktop/Class/BRATS2015/HGG_ni/T2')).get_data()
+                t1 = load_nii(os.path.join('/Users/ryoheieguchi/Desktop/Class/BRATS2015/HGG_ni/T1')).get_data()
+                t1ce = load_nii(os.path.join('/Users/ryoheieguchi/Desktop/Class/BRATS2015/HGG_ni/T1C')).get_data()
             else:
 
-                flair = load_nii(os.path.join(path, file, file + '_flair.nii.gz')).get_data()
-                t2 = load_nii(os.path.join(path, file, file + '_t2.nii.gz')).get_data()
-                t1 = load_nii(os.path.join(path, file, file + '_t1.nii.gz')).get_data()
-                t1ce = load_nii(os.path.join(path, file, file + '_t1ce.nii.gz')).get_data()
+                flair = load_nii(os.path.join('/Users/ryoheieguchi/Desktop/Class/BRATS2015/HGG_ni/Flair')).get_data()
+                t2 = load_nii(os.path.join('/Users/ryoheieguchi/Desktop/Class/BRATS2015/HGG_ni/T2')).get_data()
+                t1 = load_nii(os.path.join('/Users/ryoheieguchi/Desktop/Class/BRATS2015/HGG_ni/T1')).get_data()
+                t1ce = load_nii(os.path.join('/Users/ryoheieguchi/Desktop/Class/BRATS2015/HGG_ni/T1C')).get_data()
+
+                #flair = load_nii(os.path.join(path, file, file + '_flair.nii.gz')).get_data()
+                #t2 = load_nii(os.path.join(path, file, file + '_t2.nii.gz')).get_data()
+                #t1 = load_nii(os.path.join(path, file, file + '_t1.nii.gz')).get_data()
+                #t1ce = load_nii(os.path.join(path, file, file + '_t1ce.nii.gz')).get_data()
 
             data_norm = np.array([norm(flair), norm(t2), norm(t1), norm(t1ce)])
             data_norm = np.transpose(data_norm, axes=[1, 2, 3, 0])
@@ -154,7 +159,7 @@ def train():
     with open('train.txt') as f:
         for line in f:
             files.append(line[:-1])
-    print '%d training samples' % len(files)
+    print("%d training samples" % len(files))
 
     flair_t2_node = tf.placeholder(dtype=tf.float32, shape=(None, HSIZE, WSIZE, CSIZE, 2))
     t1_t1ce_node = tf.placeholder(dtype=tf.float32, shape=(None, HSIZE, WSIZE, CSIZE, 2))
@@ -174,7 +179,7 @@ def train():
         flair_t2_15, flair_t2_27 = tf_models.BraTS2ScaleDenseNetConcat(input=flair_t2_node, name='flair')
         t1_t1ce_15, t1_t1ce_27 = tf_models.BraTS2ScaleDenseNetConcat(input=t1_t1ce_node, name='t1')
     else:
-        print' No such model name '
+        print("No such model name")
 
     t1_t1ce_15 = concatenate([t1_t1ce_15, flair_t2_15])
     t1_t1ce_27 = concatenate([t1_t1ce_27, flair_t2_27])
@@ -208,7 +213,7 @@ def train():
             saver.restore(sess, LOAD_PATH)
         else:
             sess.run(tf.global_variables_initializer())
-         for ei in range(NUM_EPOCHS):
+        for ei in range(NUM_EPOCHS):
             for pi in range(len(files)):
                 acc_pi, loss_pi = [], []
                 data, labels, centers = data_gen_train.next()
@@ -226,13 +231,13 @@ def train():
                     acc_pi.append([acc_ft, acc_t1c])
                     loss_pi.append(l)
                     n_pos_sum = np.sum(np.reshape(label_batch[0], (-1, 2)), axis=0)
-                    print 'epoch-patient: %d, %d, iter: %d-%d, p%%: %.4f, loss: %.4f, acc_flair_t2: %.2f%%, acc_t1_t1ce: %.2f%%' % \
-                          (ei + 1, pi + 1, nb + 1, n_batches, n_pos_sum[1]/float(np.sum(n_pos_sum)), l, acc_ft, acc_t1c)
+                    print('epoch-patient: %d, %d, iter: %d-%d, p%%: %.4f, loss: %.4f, acc_flair_t2: %.2f%%, acc_t1_t1ce: %.2f%%' % \
+                          (ei + 1, pi + 1, nb + 1, n_batches, n_pos_sum[1]/float(np.sum(n_pos_sum)), l, acc_ft, acc_t1c))
 
-                print 'patient loss: %.4f, patient acc: %.4f' % (np.mean(loss_pi), np.mean(acc_pi))
+                print('patient loss: %.4f, patient acc: %.4f' % (np.mean(loss_pi), np.mean(acc_pi)))
 
             saver.save(sess, SAVE_PATH, global_step=ei)
-            print 'model saved'
+            print('model saved')
 
     if __name__ == '__main__':
 
