@@ -1,6 +1,11 @@
-#python nii2png.py -i ../../Class/MICCAI_BraTS2020_TrainingData/BraTS20_Training_001/BraTS20_Training_001_t1.nii.gz -o ../../Class/BraTS2020_png_training/T1/
-#python nii2png.py -i ../../Class/MICCAI_BraTS2020_TrainingData/BraTS20_Training_002/BraTS20_Training_002_t1.nii.gz -o ../../Class/BraTS2020_png_training/T1/
-
 # Output folder is '' となってしまう
+#python nii2png.py -i ../../Class/MICCAI_BraTS2020_TrainingData/*/*.nii.gz -o /Users/ryoheieguchi/Desktop/Class/BraTS2020_png_training/T1/
 
-python3 nii2png.py -i ../../Class/MICCAI_BraTS2020_TrainingData/*/*_t1.nii.gz -o /Users/ryoheieguchi/Desktop/
+#!/bin/sh
+dir_path="/Users/ryoheieguchi/Desktop/Class/MICCAI_BraTS2020_ValidationData/*"
+dirs=`find $dir_path -maxdepth 1 -type f -name *_t2.nii.gz`
+
+for dir in $dirs;
+do
+    python nii2png.py -i $dir -o /Users/ryoheieguchi/Desktop/Class/BraTS2020_png_validation/T2/
+done

@@ -30,10 +30,17 @@ for i in range(0, len(files)):
     	Flair.append(files[i])
 
 
-for j in range(0, len(T2)):
-    cmd = 'python nii2png.py -i ' + T2[j] + ' -o /Users/ryoheieguchi/Desktop/Class/BraTS2020_png_training/T2/'
-    process = (subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True).communicate()[0]).decode('utf-8')
+#cmd = 'python nii2png.py -i /Users/ryoheieguchi/Desktop/Class/MICCAI_BraTS2020_TrainingData/BraTS20_Training_082/BraTS20_Training_082_t2.nii.gz -o /Users/ryoheieguchi/Desktop/Class/BraTS2020_png_training/T2/'
+#process = (subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True).communicate()[0]).decode('utf-8') 
+
+print(len(T2))
+print(T2[5])
+
+#for j in range(0, len(T2)):
+    #cmd = 'python nii2png.py -i ' + T2[j] + ' -o /Users/ryoheieguchi/Desktop/Class/BraTS2020_png_training/T2/'
+    #process = (subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True).communicate()[0]).decode('utf-8')
     
+
 
 # python nii2png.py -i ../../Class/MICCAI_BraTS2020_TrainingData/BraTS20_Training_001/BraTS20_Training_001_seg.nii.gz -o ../../Class/BraTS2020_png_training/Training_seg_001/
 
